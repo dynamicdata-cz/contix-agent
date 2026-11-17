@@ -1,0 +1,48 @@
+# CONTIX koncentrátor (ADR-177): přijímá podepsané zprávy agentů zóny a předává je do CONTIXu.
+# Běží pod neprivilegovaným uživatelem contix-agent, zapisuje jen do /var/lib/contix-agent.
+[Unit]
+Description=CONTIX concentrator (zone agents -> CONTIX)
+Documentation=https://github.com/dynamicdata-cz/contix-agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=contix-agent
+Group=contix-agent
+ExecStart=/usr/local/bin/contix-agent concentrator run --state-dir /var/lib/contix-agent/concentrator
+Restart=on-failure
+RestartSec=5
+StateDirectory=contix-agent
+StateDirectoryMode=0700
+UMask=0077
+LimitNOFILE=65536
+
+# omezení: jen síť a vlastní adresář
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+# AF_NETLINK: zjištění IP adres rozhraní pro certifikát serveru
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+# nepovolené volání vrátí chybu (Go runtime při startu zkouší setrlimit), proces se neukončí
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

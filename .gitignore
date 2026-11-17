@@ -1,0 +1,8 @@
+/bin/
+/dist/
+*.test
+coverage.out
+# Klíče a lokální konfigurace nikdy do repozitáře
+*.key
+*.pem
+/local/
