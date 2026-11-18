@@ -18,10 +18,18 @@ const (
 	ModSSHKeys   = "ssh_keys"
 	ModFirewall  = "firewall"
 	ModScheduled = "scheduled"
+	// 0.3.0: container engine, updates, SSH server settings and hardening facts
+	ModContainers = "containers"
+	ModImages     = "images"
+	ModEngine     = "engine"
+	ModSystem     = "system"
+	ModSSHD       = "sshd"
+	ModHardening  = "hardening"
 )
 
 // AllModules is the default set collected by the agent.
-var AllModules = []string{ModPorts, ModServices, ModPackages, ModAccounts, ModSSHKeys, ModFirewall, ModScheduled}
+var AllModules = []string{ModPorts, ModServices, ModPackages, ModAccounts, ModSSHKeys, ModFirewall, ModScheduled,
+	ModContainers, ModImages, ModEngine, ModSystem, ModSSHD, ModHardening}
 
 // HostInfo identifies the host (sent in snapshots and hello messages).
 type HostInfo struct {

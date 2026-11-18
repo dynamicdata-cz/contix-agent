@@ -1,5 +1,20 @@
 # Změny
 
+## 0.3.0
+
+- **Kontejnery**: Docker i Podman přes lokální soket enginu (jen čtení, metoda GET) – kontejnery s bezpečnostním nastavením
+  (uživatel, privileged, read-only kořen, no-new-privileges, oprávnění jádra, síť / PID / IPC hostitele, AppArmor,
+  seccomp, zařízení, porty, připojené svazky, limity paměti / CPU / procesů, healthcheck, restart, projekt compose),
+  image a nastavení enginu (verze, rootless, userns, icc, TCP soket bez TLS, členové skupiny docker). Proměnné prostředí
+  a příkazy se neposílají.
+- **Aktualizace a restart**: čekající (bezpečnostní) aktualizace z apt / dnf, automatické aktualizace, potřeba restartu;
+  kontrola nejvýš jednou za hodinu z lokální cache (agent ji neobnovuje).
+- **SSH server**: efektivní nastavení ze `sshd -T` včetně šifer, MAC a algoritmů výměny klíčů.
+- **Hardening**: hodnoty pro kontroly podle CIS Benchmark a NÚKIB – sysctl, volby připojení /tmp, /var/tmp, /dev/shm…,
+  práva citlivých souborů, AppArmor / SELinux, politika hesel (login.defs, pwquality, PAM), sudo bez hesla, účty bez
+  hesla, core dumpy, nepotřebné moduly jádra (USB úložiště, cramfs, dccp, sctp…), heslo zavaděče, journald, vzdálený
+  syslog, pravidla auditd, banner. Vyhodnocuje CONTIX 1.85+.
+
 ## 0.2.2
 
 - Kostra repozitáře: program `contix-agent` (role agent / koncentrátor), obálka protokolu v1.

@@ -75,6 +75,14 @@ Co agent čte (jen čtení, `sudo contix-agent agent collect` ukáže přesně t
 | SSH klíče | `~/.ssh/authorized_keys` | klíč (jen otisk, typ, délka, komentář) |
 | firewall | `nft list ruleset` / `iptables-save`, ufw | pravidla (jen otisk bez čítačů, počet, výchozí politika) |
 | plánované úlohy | cron, systemd timery | příkaz (jen program a otisk řádku) |
+| kontejnery (0.3) | API Dockeru / Podmanu přes lokální soket, jen čtení (GET) | proměnné prostředí, příkazy, štítky (kromě projektu a služby compose), obsah svazků |
+| image, kontejnerový engine (0.3) | API enginu, `/etc/docker/daemon.json`, unit `docker.service` | – (jen vybraná nastavení: icc, userns, no-new-privileges, TCP soket, TLS, skupina docker) |
+| aktualizace (0.3) | `apt-get -s upgrade` / `dnf -C list --upgrades`, `/run/reboot-required` – nejvýš jednou za hodinu, bez obnovy cache | – |
+| SSH server (0.3) | `sshd -T` (vybraná nastavení vč. šifer, MAC a výměny klíčů) | cesty a obsah klíčů hostitele |
+| hardening (0.3) | `/proc/sys` (sysctl), `/proc/1/mountinfo`, práva citlivých souborů, AppArmor / SELinux, `login.defs`, pwquality, PAM, sudoers, modprobe, coredump, journald, rsyslog, pravidla auditd, heslo GRUBu | obsah souborů, hashe hesel, heslo GRUBu – posílají se jen hodnoty nastavení, práva a jména (např. účty bez hesla, pravidla sudo bez hesla) |
+
+Agent posílá jen zjištěné hodnoty; jejich vyhodnocení (CIS Benchmark, doporučení NÚKIB) a vysvětlení dělá CONTIX,
+takže se kontroly dají zpřesnit bez nové verze agenta.
 
 Úplný snímek při startu a denně, kontrola změn každých 5 minut (posílají se jen rozdíly), stav každých 15 minut.
 Zprávy čekají ve frontě na disku (256 MB, 7 dní), když koncentrátor není dostupný. Služba běží jako root jen

@@ -30,6 +30,20 @@ type Collector struct {
 	Root string
 	// Exec runs a read-only program; nil = programs are not available (tests, unsupported OS).
 	Exec func(ctx context.Context, name string, args ...string) ([]byte, error)
+	// EngineGet replaces the container engine API (tests); nil = the local engine socket.
+	EngineGet func(ctx context.Context, path string) ([]byte, error)
+	// Now replaces the clock (tests); nil = time.Now.
+	Now func() time.Time
+
+	sysCache *SystemState
+	sysAt    time.Time
+}
+
+func (c *Collector) now() time.Time {
+	if c.Now != nil {
+		return c.Now()
+	}
+	return time.Now()
 }
 
 // NewCollector returns a collector for the running host.
@@ -90,6 +104,18 @@ func (c *Collector) Collect(ctx context.Context, modules []string) *Snapshot {
 			err = c.firewall(ctx, s)
 		case ModScheduled:
 			err = c.scheduled(ctx, s)
+		case ModContainers:
+			err = c.containers(ctx, s)
+		case ModImages:
+			err = c.images(ctx, s)
+		case ModEngine:
+			err = c.engine(ctx, s)
+		case ModSystem:
+			err = c.system(ctx, s)
+		case ModSSHD:
+			err = c.sshd(ctx, s)
+		case ModHardening:
+			err = c.hardening(ctx, s)
 		default:
 			err = fmt.Errorf("unknown module")
 		}
